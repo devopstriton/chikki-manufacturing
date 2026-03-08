@@ -1,0 +1,404 @@
+/* ─── Process Flow Pipeline ─── */
+.process-pipeline {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.process-stage-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ─── Stage Node ─── */
+.process-node {
+    position: relative;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    overflow: hidden;
+}
+
+.process-node:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateX(4px);
+}
+
+.process-node--selected {
+    border-color: rgba(234, 179, 8, 0.35) !important;
+    background: rgba(234, 179, 8, 0.08) !important;
+    box-shadow: 0 0 24px rgba(234, 179, 8, 0.1);
+}
+
+.process-node--active {
+    border-color: rgba(52, 211, 153, 0.2);
+}
+
+.process-node--empty {
+    opacity: 0.6;
+}
+
+/* Glow effect behind active nodes */
+.process-node__glow {
+    position: absolute;
+    inset: -1px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.08), transparent);
+    pointer-events: none;
+    animation: nodeGlow 3s ease-in-out infinite;
+}
+
+@keyframes nodeGlow {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Node content */
+.process-node__content {
+    position: relative;
+    z-index: 1;
+}
+
+.process-node__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.process-node__icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.process-node__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.process-node__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #e5e7eb;
+    letter-spacing: -0.01em;
+}
+
+.process-node__desc {
+    display: block;
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.process-node__badge {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 99px;
+    background: rgba(52, 211, 153, 0.15);
+    color: #34d399;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.process-node__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 4px;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.process-node__stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.process-node__stat-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.process-node__stat-value {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+/* Selection arrow */
+.process-node__arrow {
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #eab308;
+    animation: arrowPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowPulse {
+
+    0%,
+    100% {
+        opacity: 0.7;
+        transform: translateY(-50%) translateX(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-50%) translateX(3px);
+    }
+}
+
+/* ─── Pipe Connector ─── */
+.process-pipe {
+    position: relative;
+    width: 4px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.process-pipe__line {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.process-pipe__flow {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border-radius: 99px;
+    background: linear-gradient(180deg, rgba(234, 179, 8, 0.4), rgba(52, 211, 153, 0.2));
+    animation: pipeFlowPulse 2s ease-in-out infinite;
+}
+
+@keyframes pipeFlowPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Flowing particles */
+.process-pipe__particle {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: #fbbf24;
+    box-shadow: 0 0 6px rgba(251, 191, 36, 0.6), 0 0 12px rgba(251, 191, 36, 0.3);
+    pointer-events: none;
+    animation: particleFade 0.5s ease-out;
+}
+
+@keyframes particleFade {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.5);
+    }
+
+    20% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+
+    100% {
+        opacity: 0.8;
+        transform: translateX(-50%) scale(1);
+    }
+}
+
+/* ─── View Toggle ─── */
+.view-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.view-toggle__btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: #9ca3af;
+    background: transparent;
+    border: none;
+}
+
+.view-toggle__btn:hover {
+    color: #e5e7eb;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.view-toggle__btn--active {
+    color: #fbbf24 !important;
+    background: rgba(234, 179, 8, 0.12) !important;
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.08);
+}
+
+/* ─── Mobile Horizontal Pipeline ─── */
+.flow-horiz-pipeline {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    gap: 0;
+    padding: 4px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.flow-horiz-pipeline::-webkit-scrollbar {
+    display: none;
+}
+
+.flow-horiz-stage {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.flow-horiz-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    min-width: 72px;
+}
+
+.flow-horiz-node:active {
+    transform: scale(0.95);
+}
+
+.flow-horiz-node--selected {
+    border-color: rgba(234, 179, 8, 0.4) !important;
+    background: rgba(234, 179, 8, 0.1) !important;
+    box-shadow: 0 0 16px rgba(234, 179, 8, 0.1);
+}
+
+.flow-horiz-node--active {
+    border-color: rgba(52, 211, 153, 0.2);
+}
+
+.flow-horiz-node__label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #d1d5db;
+}
+
+.flow-horiz-node__badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 99px;
+    background: rgba(52, 211, 153, 0.2);
+    color: #34d399;
+    font-size: 9px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flow-horiz-node__value {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-top: 1px;
+}
+
+/* Horizontal pipe between nodes */
+.flow-horiz-pipe {
+    position: relative;
+    width: 20px;
+    height: 3px;
+    flex-shrink: 0;
+}
+
+.flow-horiz-pipe__line {
+    position: absolute;
+    inset: 0;
+    border-radius: 99px;
+    background: linear-gradient(90deg, rgba(234, 179, 8, 0.3), rgba(52, 211, 153, 0.2));
+    animation: pipeFlowPulse 2s ease-in-out infinite;
+}
+
+/* Make nodes relative for badge positioning */
+.flow-horiz-node {
+    position: relative;
+}
+
+/* ─── Mobile safe area ─── */
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* ─── Responsive view toggle ─── */
+@media (max-width: 640px) {
+    .view-toggle {
+        gap: 4px;
+        padding: 3px;
+    }
+
+    .view-toggle__btn {
+        padding: 6px 10px;
+        font-size: 11px;
+        gap: 4px;
+    }
+}
